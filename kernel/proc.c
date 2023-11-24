@@ -273,6 +273,8 @@ fork(void)
     release(&np->lock);
     return -1;
   }
+  np->trace_mask = p->trace_mask;
+
   np->sz = p->sz;
 
   np->parent = p;
@@ -489,6 +491,18 @@ scheduler(void)
     }
   }
 }
+
+void
+procnum(uint64 *num)
+{
+  *num = 0;
+  struct proc *p;
+  for (p = proc; p < &proc[NPROC]; p++) {
+    if (p->state != UNUSED)
+      (*num)++;
+  }
+}
+
 
 // Switch to scheduler.  Must hold only p->lock
 // and have changed proc->state. Saves and restores

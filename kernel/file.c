@@ -12,6 +12,7 @@
 #include "file.h"
 #include "stat.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 struct devsw devsw[NDEV];
 struct {
@@ -99,6 +100,15 @@ filestat(struct file *f, uint64 addr)
     return 0;
   }
   return -1;
+}
+
+int
+filesys(struct sysinfo *s, uint64 addr)
+{
+  struct proc *p = myproc();
+  if(copyout(p->pagetable, addr, (char *)s, sizeof(*s)) < 0)
+    return -1;
+  return 0;
 }
 
 // Read from file f.
